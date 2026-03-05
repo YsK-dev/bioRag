@@ -51,9 +51,11 @@ EXAMPLE_QUERIES = [
 #  Command handlers
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def cmd_ingest(force: bool = False) -> None:
     """Fetch PubMed + preprint data and build/update the vector store."""
     from ingest import load_or_ingest
+
     print("Ingesting RARS1 literature from PubMed and preprint databases...")
     collection = load_or_ingest(force=force)
     print(f"Ingestion complete -- {collection.count()} chunks indexed.\n")
@@ -62,16 +64,17 @@ def cmd_ingest(force: bool = False) -> None:
 def cmd_query(question: str, json_output: bool = False) -> None:
     """Run a single query and print the result."""
     from rag_pipeline import RAGPipeline
+
     pipeline = RAGPipeline()
     resp = pipeline.query(question)
 
     if json_output:
         output = {
-            "query":       resp.query,
-            "in_scope":    resp.in_scope,
-            "answer":      resp.answer,
-            "citations":   resp.citations,
-            "guardrail":   resp.guardrail.to_dict() if resp.guardrail else None,
+            "query": resp.query,
+            "in_scope": resp.in_scope,
+            "answer": resp.answer,
+            "citations": resp.citations,
+            "guardrail": resp.guardrail.to_dict() if resp.guardrail else None,
         }
         print(json.dumps(output, indent=2, ensure_ascii=False))
     else:
@@ -140,6 +143,7 @@ def cmd_evaluate() -> None:
 #  CLI parser
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def build_parser() -> argparse.ArgumentParser:
     """Construct and return the top-level CLI argument parser."""
     parser = argparse.ArgumentParser(
@@ -193,10 +197,11 @@ def build_parser() -> argparse.ArgumentParser:
 #  Entrypoint
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def main() -> None:
     """Parse CLI arguments and dispatch to the appropriate command handler."""
     parser = build_parser()
-    args   = parser.parse_args()
+    args = parser.parse_args()
 
     # Apply log level
     logging.getLogger().setLevel(getattr(logging, args.log_level))
@@ -207,7 +212,7 @@ def main() -> None:
 
     if args.command == "ingest":
         force = getattr(args, "force", False) or args.fresh
-        if not args.fresh:   # avoid double-ingestion
+        if not args.fresh:  # avoid double-ingestion
             cmd_ingest(force=force)
 
     elif args.command == "query":

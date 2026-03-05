@@ -9,6 +9,7 @@ POST /api/query/stream    SSE streaming query; emits scope / citation / token ev
 GET  /api/variants        Extract genomic entities found in the indexed literature.
 GET  /api/gene-info       Return curated RARS1 / HLD9 reference data.
 """
+
 import json
 import re
 import logging
@@ -21,24 +22,27 @@ from typing import List, Optional
 from src.rag_pipeline import RAGPipeline, RAGResponse
 
 log = logging.getLogger("api")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 app = FastAPI(
     title="RARS1 Genomic Intelligence API",
     description="Backend API for querying the RARS1 RAG system.",
-    version="1.0.0"
+    version="1.0.0",
 )
 
 # Enable CORS for the Vite frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 pipeline = None
+
 
 @app.on_event("startup")
 async def startup_event():
@@ -51,11 +55,13 @@ async def startup_event():
         log.error(f"Failed to initialize RAGPipeline: {e}")
         raise e
 
+
 # --- Models ---
 class QueryRequest(BaseModel):
     """Request body for /api/query and /api/query/stream."""
 
     query: str
+
 
 class CitationModel(BaseModel):
     """A single bibliographic citation returned alongside a RAG answer."""
@@ -63,6 +69,7 @@ class CitationModel(BaseModel):
     pmid: str
     title: str
     url: str
+
 
 class GuardrailModel(BaseModel):
     """Hallucination-detection result attached to every query response."""
@@ -73,11 +80,14 @@ class GuardrailModel(BaseModel):
     fabricated_pmids: List[str] = []
     summary: str = ""
 
+
 class QueryResponse(BaseModel):
     """Full non-streaming response returned by /api/query."""
+
     answer: str
     citations: List[CitationModel]
     guardrail: Optional[GuardrailModel]
+
 
 # --- Endpoints ---
 @app.get("/api/status")
@@ -85,23 +95,28 @@ async def status():
     """Health check endpoint."""
     return {"status": "ok", "pipeline_loaded": pipeline is not None}
 
+
 @app.post("/api/query", response_model=QueryResponse)
 async def query_endpoint(req: QueryRequest):
     """Process a user query through the RAG pipeline (non-streaming)."""
     if not pipeline:
-        raise HTTPException(status_code=503, detail="Pipeline is still initializing or failed to load.")
-    
+        raise HTTPException(
+            status_code=503, detail="Pipeline is still initializing or failed to load."
+        )
+
     try:
         rag_resp: RAGResponse = pipeline.query(req.query)
-        
+
         citations = []
         for c in rag_resp.citations:
-            citations.append(CitationModel(
-                pmid=c.get("pmid", ""),
-                title=c.get("title", ""),
-                url=c.get("url", ""),
-            ))
-        
+            citations.append(
+                CitationModel(
+                    pmid=c.get("pmid", ""),
+                    title=c.get("title", ""),
+                    url=c.get("url", ""),
+                )
+            )
+
         guardrail = None
         if rag_resp.guardrail:
             guardrail = GuardrailModel(
@@ -111,12 +126,12 @@ async def query_endpoint(req: QueryRequest):
                 fabricated_pmids=rag_resp.guardrail.fabricated_pmids,
                 summary=rag_resp.guardrail.summary,
             )
-        
+
         return QueryResponse(
             in_scope=rag_resp.in_scope,
             answer=rag_resp.answer,
             citations=citations,
-            guardrail=guardrail
+            guardrail=guardrail,
         )
     except Exception as e:
         log.error(f"Error processing query: {e}")
@@ -134,7 +149,9 @@ async def query_stream_endpoint(req: QueryRequest):
       event: done      → {}
     """
     if not pipeline:
-        raise HTTPException(status_code=503, detail="Pipeline is still initializing or failed to load.")
+        raise HTTPException(
+            status_code=503, detail="Pipeline is still initializing or failed to load."
+        )
 
     def event_generator():
         try:
@@ -154,17 +171,17 @@ async def query_stream_endpoint(req: QueryRequest):
             "Cache-Control": "no-cache",
             "Connection": "keep-alive",
             "X-Accel-Buffering": "no",
-        }
+        },
     )
 
 
 # ── Variant regex (same as guardrail.py) ──────────────────────────────────────
 _VARIANT_RE = re.compile(
-    r'(?:'
-    r'c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]'
-    r'|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*'
-    r'|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\)'
-    r')',
+    r"(?:"
+    r"c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]"
+    r"|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*"
+    r"|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\)"
+    r")",
     re.IGNORECASE,
 )
 
@@ -181,29 +198,41 @@ async def variants_endpoint():
     # Broader patterns to catch different variant/gene mention styles
     patterns = {
         "hgvs": re.compile(
-            r'(?:c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]'
-            r'|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*'
-            r'|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\))',
-            re.IGNORECASE
+            r"(?:c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]"
+            r"|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*"
+            r"|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\))",
+            re.IGNORECASE,
         ),
         "gene": re.compile(
-            r'\b(RARS1|RARS|DARS|KARS|AARS|MARS|IARS|LARS|EPRS|CHD1|MAP3K7|TP53|BRCA[12]|EGFR)\b'
+            r"\b(RARS1|RARS|DARS|KARS|AARS|MARS|IARS|LARS|EPRS|CHD1|MAP3K7|TP53|BRCA[12]|EGFR)\b"
         ),
         "mutation_term": re.compile(
-            r'\b(missense|nonsense|frameshift|splice.site|truncat\w+|loss.of.function|gain.of.function'
-            r'|knock.?out|homozygous|heterozygous|compound.heterozygous|biallelic|monoallelic'
-            r'|pathogenic|likely.pathogenic|variant.of.uncertain|benign'
-            r'|deletion|duplication|insertion|substitution)\b',
-            re.IGNORECASE
+            r"\b(missense|nonsense|frameshift|splice.site|truncat\w+|loss.of.function|gain.of.function"
+            r"|knock.?out|homozygous|heterozygous|compound.heterozygous|biallelic|monoallelic"
+            r"|pathogenic|likely.pathogenic|variant.of.uncertain|benign"
+            r"|deletion|duplication|insertion|substitution)\b",
+            re.IGNORECASE,
         ),
     }
 
     phenotype_terms = [
-        "hypomyelination", "leukodystrophy", "nystagmus", "spasticity",
-        "ataxia", "developmental delay", "microcephaly", "hypotonia",
-        "seizure", "intellectual disability", "white matter",
-        "peripheral neuropathy", "cerebellar", "myelination",
-        "neurodegeneration", "motor", "cognitive",
+        "hypomyelination",
+        "leukodystrophy",
+        "nystagmus",
+        "spasticity",
+        "ataxia",
+        "developmental delay",
+        "microcephaly",
+        "hypotonia",
+        "seizure",
+        "intellectual disability",
+        "white matter",
+        "peripheral neuropathy",
+        "cerebellar",
+        "myelination",
+        "neurodegeneration",
+        "motor",
+        "cognitive",
     ]
 
     entities = {}  # entity_str -> {type, sources, phenotypes}
@@ -223,7 +252,12 @@ async def variants_endpoint():
             for match in regex.findall(doc):
                 key = match.strip()
                 if key not in entities:
-                    entities[key] = {"type": ptype, "sources": set(), "phenotypes": set(), "titles": set()}
+                    entities[key] = {
+                        "type": ptype,
+                        "sources": set(),
+                        "phenotypes": set(),
+                        "titles": set(),
+                    }
                 if pmid:
                     entities[key]["sources"].add(pmid)
                 if title:
@@ -231,15 +265,19 @@ async def variants_endpoint():
                 entities[key]["phenotypes"].update(chunk_phenotypes)
 
     result = []
-    for ent, info in sorted(entities.items(), key=lambda x: (-len(x[1]["sources"]), x[0])):
-        result.append({
-            "variant": ent,
-            "type": info["type"],
-            "sources": list(info["sources"]),
-            "phenotypes": list(info["phenotypes"]),
-            "source_count": len(info["sources"]),
-            "titles": list(info["titles"])[:3],  # top 3 paper titles
-        })
+    for ent, info in sorted(
+        entities.items(), key=lambda x: (-len(x[1]["sources"]), x[0])
+    ):
+        result.append(
+            {
+                "variant": ent,
+                "type": info["type"],
+                "sources": list(info["sources"]),
+                "phenotypes": list(info["phenotypes"]),
+                "source_count": len(info["sources"]),
+                "titles": list(info["titles"])[:3],  # top 3 paper titles
+            }
+        )
 
     return {"variants": result, "total": len(result)}
 
@@ -266,7 +304,7 @@ async def gene_info_endpoint():
                 "uniprot": "https://www.uniprot.org/uniprot/P54136",
                 "ncbi": "https://www.ncbi.nlm.nih.gov/gene/5917",
                 "clinvar": "https://www.ncbi.nlm.nih.gov/clinvar/?term=RARS1",
-            }
+            },
         },
         "disease": {
             "name": "Hypomyelinating Leukodystrophy 9 (HLD9)",
@@ -289,6 +327,5 @@ async def gene_info_endpoint():
             "indexed_chunks": chunk_count,
             "embedding_model": "pritamdeka/S-PubMedBert-MS-MARCO",
             "sources": "PubMed + Europe PMC preprints",
-        }
+        },
     }
-

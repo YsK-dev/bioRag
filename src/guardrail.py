@@ -29,41 +29,53 @@ log = logging.getLogger("guardrail")
 
 # HGVS coding + protein variants
 _VARIANT_RE = re.compile(
-    r'(?:'
-    r'c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]'    # c.5A>G
-    r'|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*'   # p.Met1Thr
-    r'|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\)'  # p.(Met1Thr)
-    r')',
+    r"(?:"
+    r"c\.\d+[-+]?\d*[A-Za-z]>[A-Za-z]"  # c.5A>G
+    r"|p\.[A-Z][a-z]{2}\d+[A-Z*][a-z]*"  # p.Met1Thr
+    r"|p\.\([A-Z][a-z]{2}\d+[A-Z*][a-z]*\)"  # p.(Met1Thr)
+    r")",
     re.IGNORECASE,
 )
 
 # PMIDs as cited in the LLM response: PMID:12345678 or [PMID: 12345678]
-_PMID_RE = re.compile(r'\bPMID[:\s]+(\d{6,9})\b', re.IGNORECASE)
+_PMID_RE = re.compile(r"\bPMID[:\s]+(\d{6,9})\b", re.IGNORECASE)
 
 # Clinical / phenotype terms we care about most
 _PHENOTYPE_HINTS = [
-    "hypomyelination", "leukodystrophy", "white matter", "cerebellar atrophy",
-    "nystagmus", "spasticity", "developmental delay", "intellectual disability",
-    "hypotonia", "ataxia", "seizure", "epilepsy", "peripheral neuropathy",
-    "cognitive impairment", "gait disturbance", "MRI",
+    "hypomyelination",
+    "leukodystrophy",
+    "white matter",
+    "cerebellar atrophy",
+    "nystagmus",
+    "spasticity",
+    "developmental delay",
+    "intellectual disability",
+    "hypotonia",
+    "ataxia",
+    "seizure",
+    "epilepsy",
+    "peripheral neuropathy",
+    "cognitive impairment",
+    "gait disturbance",
+    "MRI",
 ]
 
 
 @dataclass
 class GuardrailResult:
-    passed: bool                           # True = no hallucinations detected
+    passed: bool  # True = no hallucinations detected
     unverified_variants: List[str] = field(default_factory=list)
-    fabricated_pmids: List[str]    = field(default_factory=list)
-    warnings: List[str]            = field(default_factory=list)
-    summary: str                   = ""
+    fabricated_pmids: List[str] = field(default_factory=list)
+    warnings: List[str] = field(default_factory=list)
+    summary: str = ""
 
     def to_dict(self) -> dict:
         return {
-            "passed":               self.passed,
-            "unverified_variants":  self.unverified_variants,
-            "fabricated_pmids":     self.fabricated_pmids,
-            "warnings":             self.warnings,
-            "summary":              self.summary,
+            "passed": self.passed,
+            "unverified_variants": self.unverified_variants,
+            "fabricated_pmids": self.fabricated_pmids,
+            "warnings": self.warnings,
+            "summary": self.summary,
         }
 
 
@@ -88,6 +100,7 @@ def _available_pmids(contexts: List[Dict]) -> Set[str]:
 #  Public API
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def apply_guardrail(
     response_text: str,
     contexts: List[Dict],
@@ -108,12 +121,12 @@ def apply_guardrail(
     -------
     GuardrailResult
     """
-    corpus         = _context_corpus(contexts)
+    corpus = _context_corpus(contexts)
     available_pmids = _available_pmids(contexts)
     warnings: List[str] = []
 
     # ── 1. Variant verification ───────────────────────────────────────────────
-    claimed_variants  = _extract_variants(response_text)
+    claimed_variants = _extract_variants(response_text)
     unverified: List[str] = []
     for var in claimed_variants:
         if var.lower() not in corpus.lower():
@@ -143,9 +156,7 @@ def apply_guardrail(
     passed = (not unverified) and (not fabricated)
 
     if passed:
-        summary = (
-            "[PASS] All variants and PMIDs in the response are grounded in retrieved sources."
-        )
+        summary = "[PASS] All variants and PMIDs in the response are grounded in retrieved sources."
     else:
         parts = []
         if unverified:

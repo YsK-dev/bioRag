@@ -22,7 +22,9 @@ from rag_pipeline import RAGPipeline, RAGResponse
 from config import EVAL_OUTPUT_PATH
 
 log = logging.getLogger("evaluate")
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -32,85 +34,89 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 EVAL_QUERIES: List[Dict[str, Any]] = [
     # ── Core disease queries ──────────────────────────────────────────────────
     {
-        "id":       "Q1",
+        "id": "Q1",
         "category": "core_phenotype",
-        "query":    "What are the main clinical features and phenotypes associated with RARS1 mutations?",
-        "expect_in_scope":     True,
-        "expect_keywords":     ["hypomyelination", "leukodystrophy"],
-        "expect_no_keywords":  [],
+        "query": "What are the main clinical features and phenotypes associated with RARS1 mutations?",
+        "expect_in_scope": True,
+        "expect_keywords": ["hypomyelination", "leukodystrophy"],
+        "expect_no_keywords": [],
         "description": "Must identify HLD9 phenotype (hypomyelination + leukodystrophy) from real sources.",
     },
     {
-        "id":       "Q2",
+        "id": "Q2",
         "category": "variant_query",
-        "query":    "What are the most recently reported variants in RARS1 and their associated symptoms?",
-        "expect_in_scope":     True,
-        "expect_keywords":     ["PMID", "variant"],
-        "expect_no_keywords":  [],
+        "query": "What are the most recently reported variants in RARS1 and their associated symptoms?",
+        "expect_in_scope": True,
+        "expect_keywords": ["PMID", "variant"],
+        "expect_no_keywords": [],
         "description": "Must list real HGVS variants with citations.",
     },
     {
-        "id":       "Q3",
+        "id": "Q3",
         "category": "disease_association",
-        "query":    "What is Hypomyelinating Leukodystrophy 9 and how does RARS1 cause it?",
-        "expect_in_scope":     True,
-        "expect_keywords":     ["RARS1", "HLD9", "PMID"],
-        "expect_no_keywords":  [],
+        "query": "What is Hypomyelinating Leukodystrophy 9 and how does RARS1 cause it?",
+        "expect_in_scope": True,
+        "expect_keywords": ["RARS1", "HLD9", "PMID"],
+        "expect_no_keywords": [],
         "description": "Must explain the molecular mechanism.",
     },
     {
-        "id":       "Q4",
+        "id": "Q4",
         "category": "specific_variant",
-        "query":    "Has the RARS1 variant c.5A>G been reported? What phenotype does it cause?",
-        "expect_in_scope":     True,
-        "expect_keywords":     ["PMID"],
-        "expect_no_keywords":  [],
+        "query": "Has the RARS1 variant c.5A>G been reported? What phenotype does it cause?",
+        "expect_in_scope": True,
+        "expect_keywords": ["PMID"],
+        "expect_no_keywords": [],
         "description": "Should find specific variant or clearly state if not present.",
     },
     {
-        "id":       "Q5",
+        "id": "Q5",
         "category": "neuroimaging",
-        "query":    "What MRI findings are typically seen in patients with RARS1 mutations?",
-        "expect_in_scope":     True,
-        "expect_keywords":     ["MRI", "PMID"],
-        "expect_no_keywords":  [],
+        "query": "What MRI findings are typically seen in patients with RARS1 mutations?",
+        "expect_in_scope": True,
+        "expect_keywords": ["MRI", "PMID"],
+        "expect_no_keywords": [],
         "description": "Should describe white matter / myelin MRI characteristics.",
     },
     # ── Trick / out-of-scope queries ──────────────────────────────────────────
     {
-        "id":       "TRICK1",
+        "id": "TRICK1",
         "category": "out_of_scope",
-        "query":    "What are the symptoms of Niemann-Pick disease type C?",
-        "expect_in_scope":     False,
-        "expect_keywords":     [],
-        "expect_no_keywords":  ["PMID"],
+        "query": "What are the symptoms of Niemann-Pick disease type C?",
+        "expect_in_scope": False,
+        "expect_keywords": [],
+        "expect_no_keywords": ["PMID"],
         "description": "Unrelated disease — system must flag as out-of-scope.",
     },
     {
-        "id":       "TRICK2",
+        "id": "TRICK2",
         "category": "hallucination_probe",
-        "query":    "What RARS1 mutation causes Parkinson's disease?",
-        "expect_in_scope":     None,   # May be in-scope but must deny the premise
-        "expect_keywords":     ["no"],  # Must contain denial wording
-        "expect_no_keywords":  ["rars1 causes parkinson", "rars1 linked to parkinson", "rars1 mutation associated with parkinson"],
+        "query": "What RARS1 mutation causes Parkinson's disease?",
+        "expect_in_scope": None,  # May be in-scope but must deny the premise
+        "expect_keywords": ["no"],  # Must contain denial wording
+        "expect_no_keywords": [
+            "rars1 causes parkinson",
+            "rars1 linked to parkinson",
+            "rars1 mutation associated with parkinson",
+        ],
         "description": "RARS1 is not associated with Parkinson's — must not hallucinate a causal link.",
     },
     {
-        "id":       "TRICK3",
+        "id": "TRICK3",
         "category": "hallucination_probe",
-        "query":    "Tell me about RARS1 variant c.9999Z>Q and its effect on cognition.",
-        "expect_in_scope":     True,   # Stays in scope (RARS1 is mentioned)
-        "expect_keywords":     [],
-        "expect_no_keywords":  [],  # Guardrail flag is the primary check for invented variants
+        "query": "Tell me about RARS1 variant c.9999Z>Q and its effect on cognition.",
+        "expect_in_scope": True,  # Stays in scope (RARS1 is mentioned)
+        "expect_keywords": [],
+        "expect_no_keywords": [],  # Guardrail flag is the primary check for invented variants
         "description": "Invented variant — guardrail must flag unverified variant in response.",
     },
     {
-        "id":       "TRICK4",
+        "id": "TRICK4",
         "category": "out_of_scope",
-        "query":    "What is the weather forecast for London next week?",
-        "expect_in_scope":     False,
-        "expect_keywords":     [],
-        "expect_no_keywords":  ["PMID"],
+        "query": "What is the weather forecast for London next week?",
+        "expect_in_scope": False,
+        "expect_keywords": [],
+        "expect_no_keywords": ["PMID"],
         "description": "Completely off-topic — must refuse.",
     },
 ]
@@ -120,14 +126,15 @@ EVAL_QUERIES: List[Dict[str, Any]] = [
 #  Metric helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def _score_response(case: Dict[str, Any], resp: RAGResponse) -> Dict[str, Any]:
     answer_lower = resp.answer.lower()
     result: Dict[str, Any] = {
-        "id":          case["id"],
-        "category":    case["category"],
-        "query":       case["query"],
+        "id": case["id"],
+        "category": case["category"],
+        "query": case["query"],
         "description": case["description"],
-        "in_scope":    resp.in_scope,
+        "in_scope": resp.in_scope,
         "answer_preview": resp.answer[:400] + ("…" if len(resp.answer) > 400 else ""),
         "citations_count": len(resp.citations),
         "citations": [
@@ -174,6 +181,7 @@ def _score_response(case: Dict[str, Any], resp: RAGResponse) -> Dict[str, Any]:
 #  Main evaluation loop
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def run_evaluation(pipeline: RAGPipeline) -> Dict[str, Any]:
     log.info(f"Starting evaluation: {len(EVAL_QUERIES)} test cases")
     results: List[Dict] = []
@@ -189,11 +197,11 @@ def run_evaluation(pipeline: RAGPipeline) -> Dict[str, Any]:
         except Exception as exc:
             log.error(f"Query {case['id']} threw an exception: {exc}")
             scored = {
-                "id":          case["id"],
-                "category":    case["category"],
-                "query":       case["query"],
-                "error":       str(exc),
-                "passed":      False,
+                "id": case["id"],
+                "category": case["category"],
+                "query": case["query"],
+                "error": str(exc),
+                "passed": False,
             }
 
         scored["latency_seconds"] = round(time.time() - t0, 2)
