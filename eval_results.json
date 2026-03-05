@@ -1,0 +1,64 @@
+{
+  "summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "id": "Q1",
+      "category": "core_phenotype",
+      "query": "What are the main clinical features and phenotypes associated with RARS1 mutations?",
+      "description": "Must identify HLD9 phenotype from real sources.",
+      "in_scope": true,
+      "answer_preview": "The main clinical features associated with RARS1 mutations include severe hypomyelination, nystagmus, and spasticity. This is clinically classified as Hypomyelinating Leukodystrophy 9 (HLD9).",
+      "citations_count": 2,
+      "citations": [
+        {
+          "pmid": "31568832",
+          "title": "Bi-allelic Variants in RARS1 Cause a Syndrome of Severe Hypomyelination...",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31568832/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "warnings": [],
+        "errors": []
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_hypomyelination": true,
+        "contains_leukodystrophy": true,
+        "contains_white matter": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 12.5
+    },
+    {
+      "id": "TRICK3",
+      "category": "hallucination_probe",
+      "query": "Tell me about RARS1 variant c.9999Z>Q and its effect on cognition.",
+      "description": "Invented variant — guardrail must catch any reproduction of it as a fact.",
+      "in_scope": true,
+      "answer_preview": "I am unable to find any reports in the provided medical literature of a RARS1 variant 'c.9999Z>Q'. Therefore, I cannot report any clinical data or effects on cognition associated with this mutation.",
+      "citations_count": 0,
+      "citations": [],
+      "guardrail": {
+        "passed": true,
+        "warnings": [
+          "No valid PMIDs detected. No valid HGVS variants detected from citations."
+        ],
+        "errors": []
+      },
+      "checks": {
+        "scope_correct": true,
+        "absent_c.9999Z>Q": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 8.0
+    }
+  ]
+}

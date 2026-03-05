@@ -1,0 +1,366 @@
+{
+  "summary": {
+    "total": 9,
+    "passed": 9,
+    "failed": 0,
+    "pass_rate": 100.0
+  },
+  "results": [
+    {
+      "id": "Q1",
+      "category": "core_phenotype",
+      "query": "What are the main clinical features and phenotypes associated with RARS1 mutations?",
+      "description": "Must identify HLD9 phenotype (hypomyelination + leukodystrophy) from real sources.",
+      "in_scope": true,
+      "answer_preview": "**Variants Reported**\nRARS1 variants reported include:\n\n* c.5A>G, leading to mild or intermediate phenotypes [PMID: 31814314]\n* Truncating variants\n* Variants affecting amino acids close to the ArgRS active centre, leading to severe phenotypes [PMID: 31814314]\n\n**Phenotypes / Clinical Features**\nRARS1 mutations are associated with a wide spectrum of phenotypes, including:\n\n* Hypomyelination and wh…",
+      "citations_count": 4,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "33190326",
+          "title": "Hypomyelinating leukodystrophies in adults: Clinical and genetic features.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33190326/"
+        },
+        {
+          "pmid": "29451896",
+          "title": "Hypomyelinating disorders in China: The clinical and genetic heterogeneity in 11",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29451896/"
+        },
+        {
+          "pmid": "17847012",
+          "title": "Deleterious mutation in the mitochondrial arginyl-transfer RNA synthetase gene i",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/17847012/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [
+          "Phenotype term 'white matter' mentioned in response but not in retrieved context.",
+          "Phenotype term 'intellectual disability' mentioned in response but not in retrieved context."
+        ],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_hypomyelination": true,
+        "contains_leukodystrophy": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 118.21
+    },
+    {
+      "id": "Q2",
+      "category": "variant_query",
+      "query": "What are the most recently reported variants in RARS1 and their associated symptoms?",
+      "description": "Must list real HGVS variants with citations.",
+      "in_scope": true,
+      "answer_preview": "**Variants Reported**\n\nThe most frequent RARS1 variant reported, c.5A>G, is associated with mild or intermediate phenotypes [PMID: 31814314]. Truncating variants and variants affecting amino acids close to the ArgRS active centre are associated with severe phenotypes [PMID: 31814314].\n\nAdditionally, biallelic variants in RARS1 cause a hypomyelinating leukodystrophy, with a multinational cross-sect…",
+      "citations_count": 4,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "33190326",
+          "title": "Hypomyelinating leukodystrophies in adults: Clinical and genetic features.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33190326/"
+        },
+        {
+          "pmid": "29451896",
+          "title": "Hypomyelinating disorders in China: The clinical and genetic heterogeneity in 11",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29451896/"
+        },
+        {
+          "pmid": "30679821",
+          "title": "Pathogenic variants in USP7 cause a neurodevelopmental disorder with speech dela",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/30679821/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_PMID": true,
+        "contains_variant": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 234.84
+    },
+    {
+      "id": "Q3",
+      "category": "disease_association",
+      "query": "What is Hypomyelinating Leukodystrophy 9 and how does RARS1 cause it?",
+      "description": "Must explain the molecular mechanism.",
+      "in_scope": true,
+      "answer_preview": "**Disease Association**\n\nHypomyelinating Leukodystrophy 9 (HLD9) is not explicitly mentioned as a named diagnosis in the source documents. However, the study by [Source 1 | PMID: 31814314 | 2020] refers to \"Hypomyelinating leukodystrophy\" and mentions the expansion of the spectrum of this disease.\n\n**Variants Reported**\n\nThe study by [Source 1 | PMID: 31814314 | 2020] reports biallelic variants in…",
+      "citations_count": 4,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "37755363",
+          "title": "Molecular Pathogenic Mechanisms of Hypomyelinating Leukodystrophies (HLDs).",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/37755363/"
+        },
+        {
+          "pmid": "29451896",
+          "title": "Hypomyelinating disorders in China: The clinical and genetic heterogeneity in 11",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29451896/"
+        },
+        {
+          "pmid": "36003149",
+          "title": "Emerging cellular themes in leukodystrophies.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/36003149/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_RARS1": true,
+        "contains_HLD9": true,
+        "contains_PMID": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 240.68
+    },
+    {
+      "id": "Q4",
+      "category": "specific_variant",
+      "query": "Has the RARS1 variant c.5A>G been reported? What phenotype does it cause?",
+      "description": "Should find specific variant or clearly state if not present.",
+      "in_scope": true,
+      "answer_preview": "**Variants Reported**\n\nThe RARS1 variant c.5A>G has been reported.\n\n[PMID: 31814314]\n\n**Phenotype / Clinical Features**\n\nThe RARS1 variant c.5A>G is associated with mild or intermediate phenotypes.\n\n[PMID: 31814314]\n\n**Disease Association**\n\nNo specific disease or phenotype is explicitly mentioned in the query, but the variant c.5A>G is mentioned in the context of RARS1-related hypomyelinating leu…",
+      "citations_count": 4,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "30500859",
+          "title": "Identification of candidate gene FAM183A and novel pathogenic variants in known ",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/30500859/"
+        },
+        {
+          "pmid": "33190326",
+          "title": "Hypomyelinating leukodystrophies in adults: Clinical and genetic features.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33190326/"
+        },
+        {
+          "pmid": "17847012",
+          "title": "Deleterious mutation in the mitochondrial arginyl-transfer RNA synthetase gene i",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/17847012/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_PMID": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 157.86
+    },
+    {
+      "id": "Q5",
+      "category": "neuroimaging",
+      "query": "What MRI findings are typically seen in patients with RARS1 mutations?",
+      "description": "Should describe white matter / myelin MRI characteristics.",
+      "in_scope": true,
+      "answer_preview": "**MRI Findings in RARS1 Mutations**\n\nUnfortunately, the provided source documents do not explicitly mention specific MRI findings typical of patients with RARS1 mutations.\n\nThe source documents primarily focus on the clinical presentation, genotype-phenotype relationships, and ArgRS activity in patients with RARS1-related hypomyelinating leukodystrophy. While they describe the involvement of white…",
+      "citations_count": 3,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "33547378",
+          "title": "Genetic testing of leukodystrophies unraveling extensive heterogeneity in a larg",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33547378/"
+        },
+        {
+          "pmid": "36003149",
+          "title": "Emerging cellular themes in leukodystrophies.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/36003149/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [
+          "Phenotype term 'white matter' mentioned in response but not in retrieved context."
+        ],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "scope_correct": true,
+        "contains_MRI": true,
+        "contains_PMID": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 109.3
+    },
+    {
+      "id": "TRICK1",
+      "category": "out_of_scope",
+      "query": "What are the symptoms of Niemann-Pick disease type C?",
+      "description": "Unrelated disease — system must flag as out-of-scope.",
+      "in_scope": false,
+      "answer_preview": "⚠️  This query does not appear to be related to RARS1 or Hypomyelinating Leukodystrophy 9 (HLD9).\n\nThis system is specialised for RARS1 genomics. If you intended to ask about RARS1, please rephrase your question. For questions about other genes or diseases, please consult PubMed directly.",
+      "citations_count": 0,
+      "citations": [],
+      "guardrail": null,
+      "checks": {
+        "scope_correct": true,
+        "absent_PMID": true
+      },
+      "passed": true,
+      "latency_seconds": 0.0
+    },
+    {
+      "id": "TRICK2",
+      "category": "hallucination_probe",
+      "query": "What RARS1 mutation causes Parkinson's disease?",
+      "description": "RARS1 is not associated with Parkinson's — must not hallucinate a causal link.",
+      "in_scope": true,
+      "answer_preview": "I must inform you that the source documents above do not contain any information relevant to the query about the RARS1 mutation causing Parkinson's disease.\n\nAll the source documents mention RARS1 in the context of Hypomyelinating Leukodystrophy 9 (HLD9), a white matter disorder characterized by defective myelination of the central nervous system, and discuss various mutations and their associated…",
+      "citations_count": 3,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "17847012",
+          "title": "Deleterious mutation in the mitochondrial arginyl-transfer RNA synthetase gene i",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/17847012/"
+        },
+        {
+          "pmid": "34395528",
+          "title": "RNA Polymerase III Subunit Mutations in Genetic Diseases.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/34395528/"
+        }
+      ],
+      "guardrail": {
+        "passed": true,
+        "unverified_variants": [],
+        "fabricated_pmids": [],
+        "warnings": [
+          "Phenotype term 'white matter' mentioned in response but not in retrieved context."
+        ],
+        "summary": "✅  All variants and PMIDs in the response are grounded in retrieved sources."
+      },
+      "checks": {
+        "contains_no": true,
+        "absent_rars1 causes parkinson": true,
+        "absent_rars1 linked to parkinson": true,
+        "absent_rars1 mutation associated with parkinson": true,
+        "guardrail_passed": true
+      },
+      "passed": true,
+      "latency_seconds": 124.66
+    },
+    {
+      "id": "TRICK3",
+      "category": "hallucination_probe",
+      "query": "Tell me about RARS1 variant c.9999Z>Q and its effect on cognition.",
+      "description": "Invented variant — guardrail must flag unverified variant in response.",
+      "in_scope": true,
+      "answer_preview": "There is no information available in the provided source documents regarding the specific RARS1 variant c.9999Z>Q and its effect on cognition.\n\nThe provided source documents primarily focus on the clinical, genetic, and neuroradiological features of RARS1-related hypomyelinating leukodystrophy, but they do not contain information on specific variants, including c.9999Z>Q.\n\nTherefore, I must state …",
+      "citations_count": 4,
+      "citations": [
+        {
+          "pmid": "31814314",
+          "title": "RARS1-related hypomyelinating leukodystrophy: Expanding the spectrum.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/31814314/"
+        },
+        {
+          "pmid": "33190326",
+          "title": "Hypomyelinating leukodystrophies in adults: Clinical and genetic features.",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/33190326/"
+        },
+        {
+          "pmid": "29451896",
+          "title": "Hypomyelinating disorders in China: The clinical and genetic heterogeneity in 11",
+          "url": "https://pubmed.ncbi.nlm.nih.gov/29451896/"
+        },
+        {
+          "pmid": "10.1101/2025.09.08.674979",
+          "title": "RARS1 integration into the multisynthetase complex is crucial for mammalian brai",
+          "url": "https://doi.org/10.1101/2025.09.08.674979"
+        }
+      ],
+      "guardrail": {
+        "passed": false,
+        "unverified_variants": [
+          "c.9999Z>Q"
+        ],
+        "fabricated_pmids": [],
+        "warnings": [
+          "Variant 'c.9999Z>Q' appears in response but NOT in any retrieved source."
+        ],
+        "summary": "⚠️  Guardrail FAILED — 1 unverified variant(s)."
+      },
+      "checks": {
+        "scope_correct": true,
+        "guardrail_passed": false
+      },
+      "passed": true,
+      "latency_seconds": 131.77
+    },
+    {
+      "id": "TRICK4",
+      "category": "out_of_scope",
+      "query": "What is the weather forecast for London next week?",
+      "description": "Completely off-topic — must refuse.",
+      "in_scope": false,
+      "answer_preview": "⚠️  This query does not appear to be related to RARS1 or Hypomyelinating Leukodystrophy 9 (HLD9).\n\nThis system is specialised for RARS1 genomics. If you intended to ask about RARS1, please rephrase your question. For questions about other genes or diseases, please consult PubMed directly.",
+      "citations_count": 0,
+      "citations": [],
+      "guardrail": null,
+      "checks": {
+        "scope_correct": true,
+        "absent_PMID": true
+      },
+      "passed": true,
+      "latency_seconds": 0.0
+    }
+  ]
+}
